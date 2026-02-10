@@ -167,6 +167,17 @@ remotePort = {{ $v.Second }}
                 : {})
             };
           }
+        } else if (proxy.type === "http_proxy") {
+          const localPort = parseInt(proxy.localPort);
+          const remotePort = parseInt(proxy.remotePort);
+          return {
+            name: proxy.name,
+            type: proxy.type,
+            localIP: proxy.localIP,
+            localPort: localPort,
+            remotePort: remotePort,
+            transport: proxy.transport
+          };
         } else if (
           proxy.type === "stcp" ||
           proxy.type === "xtcp" ||
