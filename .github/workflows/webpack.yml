@@ -22,7 +22,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
@@ -46,12 +46,26 @@ jobs:
           node-version: 22.12.0
           cache: 'npm'
 
-      - name: Install dependencies with retry
-        uses: nick-fields/retry-action@v3
-        with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command: npm ci
+      - name: Install dependencies (attempt 1)
+        id: install1
+        continue-on-error: true
+        run: npm ci --legacy-peer-deps
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+          ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+
+      - name: Install dependencies (attempt 2)
+        if: steps.install1.outcome == 'failure'
+        id: install2
+        continue-on-error: true
+        run: npm ci --legacy-peer-deps
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+          ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+
+      - name: Install dependencies (attempt 3)
+        if: steps.install2.outcome == 'failure'
+        run: npm ci --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
@@ -75,8 +89,26 @@ jobs:
           node-version: 22.12.0
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (attempt 1)
+        id: install1
+        continue-on-error: true
+        run: npm ci --legacy-peer-deps
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+          ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+
+      - name: Install dependencies (attempt 2)
+        if: steps.install1.outcome == 'failure'
+        id: install2
+        continue-on-error: true
+        run: npm ci --legacy-peer-deps
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+          ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+
+      - name: Install dependencies (attempt 3)
+        if: steps.install2.outcome == 'failure'
+        run: npm ci --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
