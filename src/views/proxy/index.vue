@@ -53,7 +53,7 @@ const defaultForm: FrpcProxy = {
   serverName: "",
   secretKey: "",
   bindAddr: "",
-  bindPort: null,
+  bindPort: 0,
   subdomain: "",
   basicAuth: false,
   httpUser: "",
