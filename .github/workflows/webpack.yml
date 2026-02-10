@@ -48,9 +48,15 @@ jobs:
           npm_config_network_timeout: 600000
 
       - name: Build Windows
-        run: npm run release:win
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run build:electron:win
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: |
+            release/**/*.exe
+            release/**/*.msi
 
   build-macos:
     runs-on: macos-latest
@@ -93,9 +99,15 @@ jobs:
           npm_config_network_timeout: 600000
 
       - name: Build MacOS
-        run: npm run release:mac
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run build:electron:mac
+
+      - name: Upload MacOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-installer
+          path: |
+            release/**/*.dmg
+            release/**/*.zip
 
   build-linux:
     runs-on: ubuntu-latest
@@ -138,6 +150,13 @@ jobs:
           npm_config_network_timeout: 600000
 
       - name: Build Linux
-        run: npm run release:linux
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run build:electron:linux
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-installer
+          path: |
+            release/**/*.AppImage
+            release/**/*.deb
+            release/**/*.rpm
