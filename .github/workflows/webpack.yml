@@ -1,4 +1,4 @@
-name: NodeJS with Webpack
+name: Build Electron App
 
 on:
   push:
@@ -19,13 +19,33 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+      - name: Install dependencies (attempt 1)
+        id: install1
+        continue-on-error: true
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
+
+      - name: Install dependencies (attempt 2)
+        if: steps.install1.outcome == 'failure'
+        id: install2
+        continue-on-error: true
+        run: npm install --legacy-peer-deps
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+          ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
+
+      - name: Install dependencies (attempt 3)
+        if: steps.install2.outcome == 'failure'
+        run: npm install --legacy-peer-deps
+        env:
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+          ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
 
       - name: Build Windows
         run: npm run release:win
@@ -44,31 +64,33 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-          cache: 'npm'
 
       - name: Install dependencies (attempt 1)
         id: install1
         continue-on-error: true
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
 
       - name: Install dependencies (attempt 2)
         if: steps.install1.outcome == 'failure'
         id: install2
         continue-on-error: true
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
 
       - name: Install dependencies (attempt 3)
         if: steps.install2.outcome == 'failure'
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
 
       - name: Build MacOS
         run: npm run release:mac
@@ -87,31 +109,33 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-          cache: 'npm'
 
       - name: Install dependencies (attempt 1)
         id: install1
         continue-on-error: true
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
 
       - name: Install dependencies (attempt 2)
         if: steps.install1.outcome == 'failure'
         id: install2
         continue-on-error: true
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
 
       - name: Install dependencies (attempt 3)
         if: steps.install2.outcome == 'failure'
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
         env:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+          npm_config_network_timeout: 600000
 
       - name: Build Linux
         run: npm run release:linux
