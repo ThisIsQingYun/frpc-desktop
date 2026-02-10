@@ -74,7 +74,7 @@ const defaultForm: FrpcProxy = {
 
 const editForm = ref<FrpcProxy>(_.cloneDeep(defaultForm));
 
-const proxyTypes = ref(["http", "https", "tcp", "udp", "stcp", "xtcp", "sudp"]);
+const proxyTypes = ref(["http", "https", "tcp", "udp", "stcp", "xtcp", "sudp", "http_proxy"]);
 const currSelectLocalFileType = ref();
 const hasPlugin = ref(false);
 
@@ -242,6 +242,10 @@ const isHttps = computed(() => {
   return editForm.value.type === "https";
 });
 
+const isHttpProxy = computed(() => {
+  return editForm.value.type === "http_proxy";
+});
+
 const isStcp = computed(() => {
   return editForm.value.type === "stcp";
 });
@@ -291,7 +295,7 @@ const handleGetPortCount = (portString: string) => {
 };
 
 const handleRangePort = () => {
-  if (isHttp.value || isHttps.value) {
+  if (isHttp.value || isHttps.value || isHttpProxy.value) {
     return false;
   }
   if (String(editForm.value.localPort).indexOf("-") !== -1) {
@@ -621,7 +625,7 @@ onMounted(() => {
 
 const handleProxyTypeChange = e => {
   hasPlugin.value = false;
-  if (e === "http" || e === "https" || e === "tcp" || e === "udp") {
+  if (e === "http" || e === "https" || e === "tcp" || e === "udp" || e === "http_proxy") {
     if (e === "https") {
       hasPlugin.value = true;
     }
@@ -747,7 +751,7 @@ onUnmounted(() => {
                   </div>
 
                   <div
-                    v-if="proxy.type === 'tcp' || proxy.type === 'udp'"
+                    v-if="proxy.type === 'tcp' || proxy.type === 'udp' || proxy.type === 'http_proxy'"
                     class="text-[12px] cursor-pointer"
                   >
                     <span>{{ t("proxy.mappingAddress") }}：</span>
@@ -1017,7 +1021,7 @@ onUnmounted(() => {
           <template
             v-if="!(isStcp || isXtcp || isSudp) || isStcpvisitorsProvider"
           >
-            <el-col :span="isHttp || isHttps ? 12 : isTcp || isUdp ? 24 : 12">
+            <el-col :span="isHttp || isHttps || isHttpProxy ? 12 : isTcp || isUdp ? 24 : 12">
               <el-form-item
                 :label="t('proxy.form.formItem.localIP.label')"
                 prop="localIP"
@@ -1042,7 +1046,7 @@ onUnmounted(() => {
               >
                 <div class="flex gap-2 w-full">
                   <el-input-number
-                    v-if="isHttp || isHttps"
+                    v-if="isHttp || isHttps || isHttpProxy"
                     v-model="editForm.localPort"
                     placeholder="8080"
                     class="w-full"
@@ -1070,7 +1074,7 @@ onUnmounted(() => {
               </el-form-item>
             </el-col>
           </template>
-          <template v-if="isTcp || isUdp">
+          <template v-if="isTcp || isUdp || isHttpProxy">
             <el-col :span="12">
               <el-form-item
                 :label="t('proxy.form.formItem.remotePort.label')"
